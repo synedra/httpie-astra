@@ -1,11 +1,11 @@
 #! /usr/bin/env python
 
-# This script will generate a ~/.edgerc credentials file based on
-# the output of the "{OPEN} API Administration" tool in Luna Control Center.
+# This script will generate a ~/.astrarc credentials file based on
+# the provided variables
 #
-# Usage: python gen_edgerc.py -s <section_name> -f <export_file>
+# Usage: python gen_astrarc.py 
 
-""" Copyright 2015 Akamai Technologies, Inc. All Rights Reserved.
+""" Copyright 2021 DataStax Technologies, Inc. All Rights Reserved.
  
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -28,66 +28,40 @@ import ConfigParser
 from os.path import expanduser
 
 # This script will create a configuration section with the name of the client in your 
-# ~/.edgerc credential store. Many of the sample applications use the a section 
-# named 'default' for ease when running them during API Bootcamps.  
+# ~/.astrarc credential store. 
+
+fields = ['ASTRA_DB_REGION','ASTRA_DB_ID','ASTRA_DB_USERNAME','ASTRA_DB_PASSWORD','ASTRA_DB_KEYSPACE']
 
 parser = argparse.ArgumentParser(description='After authorizing your client \
 	in the {OPEN} API Administration tool, export the credentials and process \
 	them with this script.')
 parser.add_argument('--config_section', '-s', action='store', 
-	help='create new config section with this section name.')
-parser.add_argument('--cred_file', '-f', action='store', 
-	help='use the exported file from the OPEN API Administration tool.')
+	help='create or update config section with this section name.')
 args= parser.parse_args()
 
-print "Akamai OPEN API EdgeGrid Credentials"
-print
-print "This script will create a configuration section in the local ~/.edgerc credential file."
-print
-
-if args.cred_file:
-	print "+++ Reading from EdgeGrid credentials file:", args.cred_file
-	with open (os.path.expanduser(args.cred_file), "r") as credFile:
-			text = credFile.read()
-			credFile.close()
-else:
-	print "After authorizing your client in the {OPEN} API Administration tool,"
-	print "export the credentials and paste the contents of the export file below," 
-	print "followed by control-D."
-	print
-	sys.stdout.write('>>>\n')
-	text = sys.stdin.read()
-	sys.stdout.write('<<<\n\n')
-
-# load the cred data
-home = expanduser("~")
-fieldlist = text.split()
-index = 0
-fields = {}
-
-# Parse the cred data
-while index < len(fieldlist):
-	if (re.search(r':$', fieldlist[index])):
-		fields[fieldlist[index]] = fieldlist[index + 1]
-	index += 1
-
-# Determine the section name giving precedence to -s value
+# Set up section headers
 if args.config_section:
 	section_name = args.config_section
 	section_name_pretty = args.config_section
-else:
-	section_name = fields['Name:']
-	section_name_pretty = fields['Name:']
-	print "+++ Found client credentials with the name: %s" % section_name
-
-# Fix up default sections
-if section_name.lower() == "default":
+	if section_name.lower() == "default":
+		section_name = "----DEFAULT----"
+		section_name_pretty = "default"
+else
 	section_name = "----DEFAULT----"
 	section_name_pretty = "default"
 
-# Process the original .edgerc file
+print "Datastax Astra Credentials"
+print
+print "This script will create or update a configuration section in the local ~/.astrarc credential file."
+print "Please fill in the following fields for your database:"
+print
+for field in fields:
+	value[field] = input("{field}: ")
+
+print value
+# Process the original .astrarc file
 origConfig = ConfigParser.ConfigParser()
-filename = "%s/.edgerc" % home
+filename = "%s/.astrarc" % home
 
 # If this is a new file, create it
 if not os.path.isfile(filename):
@@ -99,7 +73,7 @@ else:
 # Recommend default section name if not present
 origConfig.read(filename)
 if 'default' not in origConfig.sections():
-	reply = str(raw_input('\nThe is no default section in ~/.edgerc, do you want to use these credentials as default? [y/n]: ')).lower().strip()
+	reply = str(raw_input('\nThe is no default section in ~/.astrarc, do you want to use these credentials as default? [y/n]: ')).lower().strip()
 	print
 	if reply[0] == 'y':
 		section_name = "----DEFAULT----"
