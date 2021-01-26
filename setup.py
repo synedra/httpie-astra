@@ -14,18 +14,17 @@ setup(
     author='Kirsten Hunter',
     author_email='khunter@akamai.com',
     license='Apache 2.0',
-    url='https://github.com/akamai-open/httpie-edgegrid',
-    download_url='https://github.com/akamai-open/httpie-edgegrid',
-    py_modules=['httpie_edgegrid'],
+    url='https://github.com/akamai-open/httpie-astra',
+    download_url='https://github.com/akamai-open/httpie-astra',
+    py_modules=['httpie_astra'],
     zip_safe=False,
     entry_points={
         'httpie.plugins.auth.v1': [
-            'httpie_oauth1 = httpie_edgegrid:EdgeGridPlugin'
+            'httpie_oauth1 = httpie_astra:AstraPlugin'
         ]
     },
     install_requires=[
         'httpie >= 0.9.2',
-	    'edgegrid-python >= 1.0.9',
-        'pyOpenSSL >= 0.13'
+	    'astra-python >= 0.0.1'
     ],
 )
