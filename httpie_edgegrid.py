@@ -19,6 +19,7 @@ class HTTPieAstraAuth(AstraAuth):
  
 	def __call__(self, r):
 		return super(HTTPieAstraAuth, self).__call__(r)
+        r.url = ()
  
     if not rc.has_section(username):
             err_msg = "\nERROR: No section named '%s' was found in your .astrarc file\n" % username
@@ -41,6 +42,7 @@ class AstraPlugin(AuthPlugin):
             ASTRA_DB_REGION=rc.get(username, 'ASTRA_DB_REGION'),
             ASTRA_DB_ID=rc.get(username, 'ASTRA_DB_ID'),
             ASTRA_DB_USERNAME=rc.get(username, 'ASTRA_DB_USERNAME'),
-            ASTRA_DB_PASSWORD=rc.getint(username, 'ASTRA_DB_PASSWORD')
+            ASTRA_DB_PASSWORD=rc.getint(username, 'ASTRA_DB_PASSWORD'),
+            ASTRA_BASEURL = "https://" + host + "/api/rest"
         )
         return auth

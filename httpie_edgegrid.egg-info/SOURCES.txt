@@ -1,0 +1,12 @@
+LICENSE
+MANIFEST.in
+README.rst
+httpie_astra.py
+setup.py
+httpie_edgegrid.egg-info/PKG-INFO
+httpie_edgegrid.egg-info/SOURCES.txt
+httpie_edgegrid.egg-info/dependency_links.txt
+httpie_edgegrid.egg-info/entry_points.txt
+httpie_edgegrid.egg-info/not-zip-safe
+httpie_edgegrid.egg-info/requires.txt
+httpie_edgegrid.egg-info/top_level.txt

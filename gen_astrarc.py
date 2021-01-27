@@ -30,7 +30,7 @@ from os.path import expanduser
 # This script will create a configuration section with the name of the client in your 
 # ~/.astrarc credential store. 
 
-fields = ['ASTRA_DB_REGION','ASTRA_DB_ID','ASTRA_DB_USERNAME','ASTRA_DB_PASSWORD','ASTRA_DB_KEYSPACE']
+fields = ['ASTRA_DB_REGION','ASTRA_DB_ID','ASTRA_DB_USERNAME','ASTRA_DB_PASSWORD','ASTRA_DB_KEYBASE']
 
 parser = argparse.ArgumentParser(description='After authorizing your client \
 	in the {OPEN} API Administration tool, export the credentials and process \
@@ -59,6 +59,12 @@ print
 value = {}
 for field in fields:
 	value[field] = input(field + ": ")
+
+
+value['ASTRA_DB_TOKEN']= "X"
+value['ASTRA_DB_TOKEN_TIME'] = "X"
+fields.append('ASTRA_DB_TOKEN')
+fields.append('ASTRA_DB_TOKEN_TIME')
 
 # Process the original .astrarc file
 home = expanduser("~")
@@ -92,7 +98,7 @@ except SyntaxError:
 print 
 
 # If we have a 'default' section hide it from ConfigParser
-print ("Using {section_name}")
+print ("Using {section_name_pretty}")
 with open (filename, "r+") as myfile:
 	data=myfile.read().replace('default','----DEFAULT----')
 	myfile.close()
