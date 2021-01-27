@@ -27,7 +27,7 @@ If using python 3 on Mac, replace python with python3:
 Usage
 -----
 
-The Astra plugin relies on a .astrarc credentials file that will be created in your home directory and organized by [section] following the format below. Each [section] can contain a different credentials set allowing you to store all of your credentials in a single .edgerc file. 
+The Astra plugin relies on a .astrarc credentials file that will be created in your home directory and organized by [section] following the format below. Each [section] can contain a different credentials set allowing you to store all of your credentials in a single file. 
 
 .. code-block:: bash
 
