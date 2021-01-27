@@ -19,11 +19,7 @@ If using python 3 on Mac, replace python with python3:
 
     $ python3 setup.py install
 
-If you have problems intalling from sources, you could use pip:
 
-.. code-block:: bash
-
-    $ pip install httpie-edgegrid
 
 
 
