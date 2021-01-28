@@ -58,4 +58,20 @@ Once you have the credentials set up, here is an example of what an Astra Call c
 
 When you run the command, if your authentication token has expired it will refresh it for you.
 
+I have made a change to how httpie processes json data.  To pass JSON in the request, just use something like this:
 
+.. code-block:: bash
+
+http --auth-type astra -a default: POST :/v2/schemas/keyspaces/KS/tables json:='{"name":"products","ifNotExists":true,"columnDefinitions": [ {"name":"id","typeDefinition":"uuid","static":false}, {"name":"name","typeDefinition":"text","static":false}, {"name":"description","typeDefinition":"text","static":false}, {"name":"price","typeDefinition":"decimal","static":false}, {"name":"created","typeDefinition":"timestamp","static":false}],"primaryKey": {"partitionKey":["id"]},"tableOptions":{"defaultTimeToLive":0}}'
+
+Note that you can create a configuration file to simplify the command further
+
+.. code-block:: json
+   caption: ~/.config/httpie/config.json
+
+   	{
+		"default_options": [
+		"--style=fruity",
+		"--auth-type=astra",
+		"--auth=default:" ]
+	}	

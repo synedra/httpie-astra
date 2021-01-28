@@ -7,10 +7,8 @@ from httpie.plugins import AuthPlugin
 from configparser import ConfigParser
 from requests.auth import AuthBase
 from requests import Request, Session
-import requests
 from datetime import datetime
-import os
-import json
+import os, uuid, requests, json
 
 __version__ = '1.0.0'
 __author__ = 'Kirsten Hunter'
@@ -24,13 +22,13 @@ class AstraAuth(AuthBase):
         return r
 
 class HTTPieAstraAuth(AstraAuth):
-    def __init__(self, USERNAME, ASTRA_DB_ID, ASTRA_DB_REGION, ASTRA_DB_USERNAME, ASTRA_DB_PASSWORD, ASTRA_DB_KEYBASE, ASTRA_DB_TOKEN="X", ASTRA_DB_TOKEN_TIME= "X"):
+    def __init__(self, USERNAME, ASTRA_DB_ID, ASTRA_DB_REGION, ASTRA_DB_USERNAME, ASTRA_DB_PASSWORD, ASTRA_DB_KEYSPACE, ASTRA_DB_TOKEN="X", ASTRA_DB_TOKEN_TIME= "X"):
         self.username = USERNAME,
         self.astra_db_id = ASTRA_DB_ID
         self.astra_db_region = ASTRA_DB_REGION
         self.astra_db_username = ASTRA_DB_USERNAME
         self.astra_db_password = ASTRA_DB_PASSWORD
-        self.astra_db_keybase = ASTRA_DB_KEYBASE
+        self.astra_db_keyspace = ASTRA_DB_KEYSPACE
         self.astra_db_token = ASTRA_DB_TOKEN
         self.astra_db_token_time = ASTRA_DB_TOKEN_TIME
 
@@ -85,7 +83,16 @@ class HTTPieAstraAuth(AstraAuth):
         r.url = r.url.replace("http:","https:")
         r.headers['Content-Type'] = "application/json"
         r.headers['x-cassandra-token'] = self.astra_db_token
+        r.headers['x-cassandra-request-id'] = str(uuid.uuid4())
         r.url = r.url.replace("localhost","%s-%s.apps.astra.datastax.com/api/rest" % (self.astra_db_id, self.astra_db_region))
+        if ('KS') in r.url:
+            r.url = r.url.replace('KS', self.astra_db_keyspace)
+        
+        if "json" in json.dumps(r.body):
+            json_body = json.loads(r.body)
+            if "json" in json_body:
+                json_body = json_body["json"]
+            r.body = json.dumps(json_body)
         
         return r
 
@@ -112,7 +119,7 @@ class AstraPlugin(AuthPlugin):
             ASTRA_DB_REGION=rc.get(username, 'astra_db_region'),
             ASTRA_DB_USERNAME=rc.get(username, 'astra_db_username'),
             ASTRA_DB_PASSWORD=rc.get(username, 'astra_db_password'),
-            ASTRA_DB_KEYBASE=rc.get(username, 'astra_db_keybase'),
+            ASTRA_DB_KEYSPACE=rc.get(username, 'astra_db_keyspace'),
             ASTRA_DB_TOKEN=rc.get(username, 'astra_db_token'),
             ASTRA_DB_TOKEN_TIME=rc.get(username, 'astra_db_token_time')
         )

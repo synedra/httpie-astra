@@ -8,9 +8,9 @@ except ImportError:
 setup(
     name='httpie-astra',
     description='Astra plugin for HTTPie.',
-    python_requires=">=2.7.10",
+    python_requires=">=3.3",
     long_description=open('README.rst').read().strip(),
-    version='0.0.1',
+    version='0.0.3',
     author='Kirsten Hunter',
     author_email='kirsten.hunter@datastax.com',
     license='Apache 2.0',
