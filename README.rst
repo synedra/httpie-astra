@@ -71,7 +71,6 @@ I have made a change to how httpie processes json data.  To pass JSON in the req
 Note that you can create a configuration file to simplify the command further
 
 .. code-block:: json
-
    	caption: ~/.config/httpie/config.json
 
    	{
