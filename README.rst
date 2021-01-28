@@ -19,9 +19,11 @@ If using python 3 on Mac, replace python with python3:
 
     $ python3 setup.py install
 
+Or, if you like, you can just use pip:
 
+.. code-block:: bash
 
-
+    $ pip install httpie-astra
 
 
 Usage
