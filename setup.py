@@ -6,16 +6,16 @@ except ImportError:
 
 
 setup(
-    name='httpie-edgegrid',
-    description='Edgegrid plugin for HTTPie.',
+    name='httpie-astra',
+    description='Astra plugin for HTTPie.',
     python_requires=">=2.7.10",
     long_description=open('README.rst').read().strip(),
-    version='1.0.2',
+    version='0.0.1',
     author='Kirsten Hunter',
-    author_email='khunter@akamai.com',
+    author_email='kirsten.hunter@datastax.com',
     license='Apache 2.0',
-    url='https://github.com/akamai-open/httpie-astra',
-    download_url='https://github.com/akamai-open/httpie-astra',
+    url='https://github.com/synedra-datastax/httpie-astra',
+    download_url='https://github.com/synedra-datastax/httpie-astra',
     py_modules=['httpie_astra'],
     zip_safe=False,
     entry_points={
@@ -24,7 +24,6 @@ setup(
         ]
     },
     install_requires=[
-        'httpie >= 0.9.2',
-	    'astra-python >= 0.0.1'
+        'httpie >= 0.9.2'
     ],
 )

@@ -1,7 +1,7 @@
 httpie-astra
 ============
 
-EdgeGrid plugin for `HTTPie <https://github.com/jkbr/httpie>`_.
+Astra plugin for `HTTPie <https://github.com/jkbr/httpie>`_.
 
 
 Installation

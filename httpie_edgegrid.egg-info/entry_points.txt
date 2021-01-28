@@ -1,3 +1,0 @@
-[httpie.plugins.auth.v1]
-httpie_oauth1 = httpie_astra:AstraPlugin
-

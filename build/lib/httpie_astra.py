@@ -1,5 +1,5 @@
 """
-edgegrid auth plugin for HTTPie.
+astra auth plugin for HTTPie.
 """
 import sys
 

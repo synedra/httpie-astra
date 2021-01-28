@@ -1,5 +1,5 @@
 """
-edgegrid auth plugin for HTTPie.
+astra auth plugin for HTTPie.
 """
 import sys
 
@@ -30,7 +30,7 @@ class HTTPieAstraAuth(AstraAuth):
         self.astra_db_region = ASTRA_DB_REGION
         self.astra_db_username = ASTRA_DB_USERNAME
         self.astra_db_password = ASTRA_DB_PASSWORD
-        self.astra_db_keybase = ASTRA_DB_KEYBASE
+        self.astra_db_keyspace = ASTRA_DB_KEYSPACE
         self.astra_db_token = ASTRA_DB_TOKEN
         self.astra_db_token_time = ASTRA_DB_TOKEN_TIME
 
@@ -112,7 +112,7 @@ class AstraPlugin(AuthPlugin):
             ASTRA_DB_REGION=rc.get(username, 'astra_db_region'),
             ASTRA_DB_USERNAME=rc.get(username, 'astra_db_username'),
             ASTRA_DB_PASSWORD=rc.get(username, 'astra_db_password'),
-            ASTRA_DB_KEYBASE=rc.get(username, 'astra_db_keybase'),
+            ASTRA_DB_KEYSPACE=rc.get(username, 'astra_db_keyspace'),
             ASTRA_DB_TOKEN=rc.get(username, 'astra_db_token'),
             ASTRA_DB_TOKEN_TIME=rc.get(username, 'astra_db_token_time')
         )
