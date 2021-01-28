@@ -64,12 +64,14 @@ I have made a change to how httpie processes json data.  To pass JSON in the req
 
 .. code-block:: bash
 
-http --auth-type astra -a default: POST :/v2/schemas/keyspaces/KS/tables json:='{"name":"products","ifNotExists":true,"columnDefinitions": [ {"name":"id","typeDefinition":"uuid","static":false}, {"name":"name","typeDefinition":"text","static":false}, {"name":"description","typeDefinition":"text","static":false}, {"name":"price","typeDefinition":"decimal","static":false}, {"name":"created","typeDefinition":"timestamp","static":false}],"primaryKey": {"partitionKey":["id"]},"tableOptions":{"defaultTimeToLive":0}}'
+	http --auth-type astra -a default: POST :/v2/schemas/keyspaces/KS/tables json:='{"name":"products","ifNotExists":true,"columnDefinitions": [ 			{"name":"id","typeDefinition":"uuid","static":false}, {"name":"name","typeDefinition":"text","static":false}, 
+	{"name":"description","typeDefinition":"text","static":false}, {"name":"price","typeDefinition":"decimal","static":false}, 
+	{"name":"created","typeDefinition":"timestamp","static":false}],"primaryKey": {"partitionKey":["id"]},"tableOptions":{"defaultTimeToLive":0}}'
 
 Note that you can create a configuration file to simplify the command further
 
 .. code-block:: json
-   caption: ~/.config/httpie/config.json
+   	caption: ~/.config/httpie/config.json
 
    	{
 		"default_options": [
