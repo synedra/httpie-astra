@@ -69,7 +69,7 @@ http --auth-type astra -a default: POST :/v2/schemas/keyspaces/KS/tables json:='
 Note that you can create a configuration file to simplify the command further
 
 .. code-block:: json
-   caption: ~/.config/httpie/config.json
+   :caption: ~/.config/httpie/config.json
 
    	{
 		"default_options": [
