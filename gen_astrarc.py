@@ -54,17 +54,28 @@ print ("Datastax Astra Credentials")
 print
 print ("This script will create or update a configuration section")
 print ( "in the local ~/.astrarc credential file.")
-print ("Please fill in the following fields for your database:")
-print
-value = {}
-for field in fields:
-	value[field] = input(field + ": ")
+print ("Would you like to copy/paste the configuration block from the website (1)")
+print ("or fill in the values individually(2)?")
+
+print ("Please make a selection (1/2):")
+choice = input("Input type:")
+
+if (choice == 2):
+
+	print ("Please fill in the following fields for your database:")
+	print
+	value = {}
+	for field in fields:
+		value[field] = input(field + ": ")
 
 
-value['ASTRA_DB_TOKEN']= "X"
-value['ASTRA_DB_TOKEN_TIME'] = "X"
-fields.append('ASTRA_DB_TOKEN')
-fields.append('ASTRA_DB_TOKEN_TIME')
+	value['ASTRA_DB_TOKEN']= "X"
+	value['ASTRA_DB_TOKEN_TIME'] = "X"
+	fields.append('ASTRA_DB_TOKEN')
+	fields.append('ASTRA_DB_TOKEN_TIME')
+
+if (choice == 1):
+	
 
 # Process the original .astrarc file
 home = expanduser("~")

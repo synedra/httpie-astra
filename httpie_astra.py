@@ -22,7 +22,7 @@ class AstraAuth(AuthBase):
         return r
 
 class HTTPieAstraAuth(AstraAuth):
-    def __init__(self, USERNAME, ASTRA_DB_ID, ASTRA_DB_REGION, ASTRA_DB_USERNAME, ASTRA_DB_PASSWORD, ASTRA_DB_KEYSPACE, ASTRA_DB_TOKEN="X", ASTRA_DB_TOKEN_TIME= "X"):
+    def __init__(self, USERNAME, ASTRA_DB_ID, ASTRA_DB_REGION, ASTRA_DB_USERNAME, ASTRA_DB_PASSWORD, ASTRA_DB_KEYSPACE, ASTRA_DB_TOKEN, ASTRA_DB_TOKEN_TIME):
         self.username = USERNAME,
         self.astra_db_id = ASTRA_DB_ID
         self.astra_db_region = ASTRA_DB_REGION
@@ -31,13 +31,15 @@ class HTTPieAstraAuth(AstraAuth):
         self.astra_db_keyspace = ASTRA_DB_KEYSPACE
         self.astra_db_token = ASTRA_DB_TOKEN
         self.astra_db_token_time = ASTRA_DB_TOKEN_TIME
+        self.uuid = str(uuid.uuid4())
 
         return super(HTTPieAstraAuth, self).__init__()
                 
 
     def __call__(self, r):
         now = datetime.timestamp(datetime.now())
-        if self.astra_db_token=="X" or float(now)-float(self.astra_db_token_time)/(60) > 30:
+        
+        if (float(now)-float(self.astra_db_token_time)/(60)) > 30:
             headers = {
                 'Content-Type': 'application/json',
                 'Accept': '*/*'
@@ -83,8 +85,8 @@ class HTTPieAstraAuth(AstraAuth):
         r.url = r.url.replace("http:","https:")
         r.headers['Content-Type'] = "application/json"
         r.headers['x-cassandra-token'] = self.astra_db_token
-        r.headers['x-cassandra-request-id'] = str(uuid.uuid4())
-        r.url = r.url.replace("localhost","%s-%s.apps.astra.datastax.com/api/rest" % (self.astra_db_id, self.astra_db_region))
+        r.headers['x-cassandra-request-id'] = self.uuid
+        r.url = r.url.replace("localhost","%s-%s.apps.astra.datastax.com/api" % (self.astra_db_id, self.astra_db_region))
         if ('KS') in r.url:
             r.url = r.url.replace('KS', self.astra_db_keyspace)
         
@@ -93,9 +95,11 @@ class HTTPieAstraAuth(AstraAuth):
             if "json" in json_body:
                 json_body = json_body["json"]
             r.body = json.dumps(json_body)
+        if (r.body):
+            r.body = r.body.replace("UUID", self.uuid)
+        
         
         return r
-
  
 class AstraPlugin(AuthPlugin):
     name = 'Astra auth'
