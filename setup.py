@@ -10,7 +10,7 @@ setup(
     description='Astra plugin for HTTPie.',
     python_requires=">=3.3",
     long_description=open('README.rst').read().strip(),
-    version='0.0.4',
+    version='0.0.8',
     author='Kirsten Hunter',
     author_email='kirsten.hunter@datastax.com',
     license='Apache 2.0',

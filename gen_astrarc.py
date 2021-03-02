@@ -75,7 +75,7 @@ if (choice == 2):
 	fields.append('ASTRA_DB_TOKEN_TIME')
 
 if (choice == 1):
-	
+	print ("I'll get this soon")	
 
 # Process the original .astrarc file
 home = expanduser("~")

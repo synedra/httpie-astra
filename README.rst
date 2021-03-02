@@ -58,11 +58,9 @@ Once you have the credentials set up, here is an example of what an Astra Call c
 
 	% http --auth-type astra -a default: :/rest/v2/schemas/keyspaces
 	or
-	% http :/graphql/tutorial query='query {
-	  products(value: { id: "65cad0df-4fc8-42df-90e5-4effcd221ef7" }) {
-    		values { id name description price created }
-  }
-}'
+	% http :/graphql/tutorial query='query { products(value: { id: "65cad0df-4fc8-42df-90e5-4effcd221ef7" }) { values { id name description price created } } }'
+
+
 When you run the command, if your authentication token has expired it will refresh it for you.
 
 I have made a change to how httpie processes json data.  To pass JSON in the request, just use something like this:
