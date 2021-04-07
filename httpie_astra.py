@@ -28,12 +28,13 @@ class AstraAuth(AuthBase):
         return r
 
 class HTTPieAstraAuth(AstraAuth):
-    def __init__(self, USERNAME, ASTRA_DB_ID, ASTRA_DB_REGION, ASTRA_DB_KEYSPACE, ASTRA_DB_APPLICATION_TOKEN):
+    def __init__(self, USERNAME, ASTRA_DB_ID, ASTRA_DB_REGION, ASTRA_DB_KEYSPACE, ASTRA_DB_APPLICATION_TOKEN, ASTRA_DB_ADMIN_TOKEN):
         self.username = USERNAME,
         self.astra_db_id = ASTRA_DB_ID
         self.astra_db_region = ASTRA_DB_REGION
         self.astra_db_keyspace = ASTRA_DB_KEYSPACE
         self.astra_db_application_token = ASTRA_DB_APPLICATION_TOKEN
+        self.astra_db_admin_token = ASTRA_DB_ADMIN_TOKEN
         self.uuid = str(uuid.uuid4())
 
         return super(HTTPieAstraAuth, self).__init__()
@@ -46,14 +47,19 @@ class HTTPieAstraAuth(AstraAuth):
         r = super(HTTPieAstraAuth, self).__call__(r)
         r.url = r.url.replace("http:","https:")
         r.headers['Content-Type'] = "application/json"
+        r.headers['Authorization'] = "Bearer " + str(self.astra_db_admin_token)
         r.headers['x-cassandra-token'] = self.astra_db_application_token
         r.headers['x-cassandra-request-id'] = self.uuid
-        r.url = r.url.replace("localhost","%s-%s.apps.astra.datastax.com/api" % (self.astra_db_id, self.astra_db_region))
+        if self.astra_db_id:
+            r.url = r.url.replace("localhost","%s-%s.apps.astra.datastax.com/api" % (self.astra_db_id, self.astra_db_region))
+        else:
+            r.url = r.url.replace("localhost","api.astra.datastax.com")
+        
         if ('KS') in r.url:
             r.url = r.url.replace('KS', self.astra_db_keyspace)
         
         if "json" in json.dumps(r.body):
-            json_body = json.loads(r.body)
+            json_body = json.loads(r.body.replace('"\n"',''))
             if "json" in json_body:
                 json_body = json_body["json"]
             r.body = json.dumps(json_body)
@@ -69,7 +75,7 @@ class AstraPlugin(AuthPlugin):
     description = ''
 
     def setCreds(self, username):
-            fields = ['ASTRA_DB_REGION','ASTRA_DB_ID','ASTRA_DB_KEYSPACE', 'ASTRA_DB_APPLICATION_TOKEN']
+            fields = ['ASTRA_DB_REGION','ASTRA_DB_ID','ASTRA_DB_KEYSPACE', 'ASTRA_DB_APPLICATION_TOKEN', 'ASTRA_DB_ADMIN_TOKEN']
 
             section_name = username
             section_name_pretty = username
@@ -118,9 +124,13 @@ class AstraPlugin(AuthPlugin):
                     if "app_token" in line:
                         break
                 
-                print ("Please enter your authentication token:")
+                print ("Please enter your API Admin user token:")
                 line = input("")
                 value["ASTRA_DB_APPLICATION_TOKEN"] = line
+
+                print ("Please enter your Database Administrator user token:")
+                line = input("")
+                value["ASTRA_DB_ADMIN_TOKEN"] = line
         
             print (value)
             # Process the original .astrarc file
@@ -201,7 +211,8 @@ class AstraPlugin(AuthPlugin):
                 ASTRA_DB_ID=value["ASTRA_DB_ID"],
                 ASTRA_DB_REGION=value["ASTRA_DB_REGION"],
                 ASTRA_DB_KEYSPACE=value["ASTRA_DB_KEYSPACE"],
-                ASTRA_DB_APPLICATION_TOKEN=value["ASTRA_DB_APPLICATION_TOKEN"]            )
+                ASTRA_DB_APPLICATION_TOKEN=value["ASTRA_DB_APPLICATION_TOKEN"],
+                ASTRA_DB_ADMIN_TOKEN=value["ASTRA_DB_ADMIN_TOKEN"]             )
             return auth
  
     def get_auth(self, username, password):
@@ -212,13 +223,24 @@ class AstraPlugin(AuthPlugin):
         if not rc.has_section(username):
             return self.setCreds(username)
 
-        auth = HTTPieAstraAuth(
-            USERNAME = username,
-            ASTRA_DB_ID=rc.get(username, 'astra_db_id'),
-            ASTRA_DB_REGION=rc.get(username, 'astra_db_region'),
-            ASTRA_DB_KEYSPACE=rc.get(username, 'astra_db_keyspace'),
-            ASTRA_DB_APPLICATION_TOKEN=rc.get(username, 'astra_db_application_token'),
-        )
+        try:
+            auth = HTTPieAstraAuth(
+                USERNAME=username,
+                ASTRA_DB_ID=rc.get(username, 'astra_db_id') or None,
+                ASTRA_DB_REGION=rc.get(username, 'astra_db_region') or None,
+                ASTRA_DB_KEYSPACE=rc.get(username, 'astra_db_keyspace') or None,
+                ASTRA_DB_APPLICATION_TOKEN=rc.get(username, 'astra_db_application_token'),
+                ASTRA_DB_ADMIN_TOKEN=rc.get(username, 'astra_db_admin_token')
+            )
+        except:
+            auth=HTTPieAstraAuth(
+                USERNAME = username,
+                ASTRA_DB_APPLICATION_TOKEN=rc.get(username, 'astra_db_application_token'),
+                ASTRA_DB_ID=None,
+                ASTRA_DB_REGION=None,
+                ASTRA_DB_KEYSPACE=None,
+                ASTRA_DB_ADMIN_TOKEN=None
+            )
         return auth
 
     def __call__(self, r):
