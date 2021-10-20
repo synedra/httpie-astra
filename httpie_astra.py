@@ -77,6 +77,11 @@ class AstraPlugin(AuthPlugin):
     description = ''
 
     def setCreds(self, username):
+            # Process the original .astrarc file
+            home = expanduser("~")
+            origConfig = configparser.ConfigParser()
+            filename = "%s/.astrarc" % home
+
             fields = ['ASTRA_DB_REGION','ASTRA_DB_ID','ASTRA_DB_KEYSPACE', 'ASTRA_DB_APPLICATION_TOKEN', 'ASTRA_DB_ADMIN_TOKEN']
 
             section_name = username
@@ -88,65 +93,63 @@ class AstraPlugin(AuthPlugin):
                 section_name = username
                 section_name_pretty = username
 
-            print ("Datastax Astra Credentials")
-            print
-            print ("This script will create or update a configuration section")
-            print ( "in the local ~/.astrarc credential file.")
-            print ("Would you like to copy/paste the configuration block from the website (1)")
-            print ("or fill in the values individually(2)?")
-
-            print ("Please make a selection (1/2):")
-            choice = input("Input type:").strip()
-            value = {}
-  
-            if (choice == "2"):
-                print ("Please fill in the following fields for your database:")
-                print
-                for field in fields:
-                    value[field] = input(field + ": ")
-
-            if (choice == "1"):
-                err_msg = "\WARNING: No section named '%s' was found in your .astrarc file\n" % username
-                err_msg += "Let's grab your configuration from the Astra Website.\n"
-                err_msg += "Please log into your Astra instance at https://astra.datastax.com,\n"
-                err_msg += "and select the database you want to use.\n\n"
-                err_msg += "Now, click on the dark blue 'Connect' button under 'Settings'\n"
-                err_msg += "On the lower right, there is a black box with 'export' commands.\n"
-                err_msg += " Copy that whole block.\n"
-                err_msg += "Paste the content below, then CTRL-D or CMD-D:\n"
-                sys.stderr.write(err_msg)
-                while True:
-                    try:
-                        line = input("")
-                    except EOFError:                    
-                        break
-                    line = line.replace('export ', '')
-                    key, contents = line.upper().split("=")
-                    value[key] = contents.lower()
-                    if "app_token" in line:
-                        break
-                
-                print ("Please enter your API Admin user token:")
-                line = input("")
-                value["ASTRA_DB_APPLICATION_TOKEN"] = line
-
-                print ("Please enter your Database Administrator user token:")
-                line = input("")
-                value["ASTRA_DB_ADMIN_TOKEN"] = line
-        
-            print (value)
-            # Process the original .astrarc file
-            home = expanduser("~")
-            origConfig = configparser.ConfigParser()
-            filename = "%s/.astrarc" % home
-
             # If this is a new file, create it
+            
             if not os.path.isfile(filename):
+                print ("+++ Found credentials file: %s" % filename)
+                origConfig.read(filename)
+
+            else:
                 print ("+++ Creating new credentials file: %s" % filename)
                 open(filename, 'a+').close()
-            else:
-                print ("+++ Found credentials file: %s" % filename)
+                print ("Datastax Astra Credentials")
+                print
+                print ("This script will create or update a configuration section")
+                print ( "in the local ~/.astrarc credential file.")
+                print ("Would you like to copy/paste the configuration block from the website (1)")
+                print ("or fill in the values individually(2)?")
+
+                print ("Please make a selection (1/2):")
+                choice = input("Input type:").strip()
+                value = {}
+    
+                if (choice == "2"):
+                    print ("Please fill in the following fields for your database:")
+                    print
+                    for field in fields:
+                        value[field] = input(field + ": ")
+
+                if (choice == "1"):
+                    err_msg = "\WARNING: No section named '%s' was found in your .astrarc file\n" % username
+                    err_msg += "Let's grab your configuration from the Astra Website.\n"
+                    err_msg += "Please log into your Astra instance at https://astra.datastax.com,\n"
+                    err_msg += "and select the database you want to use.\n\n"
+                    err_msg += "Now, click on the dark blue 'Connect' button under 'Settings'\n"
+                    err_msg += "On the lower right, there is a black box with 'export' commands.\n"
+                    err_msg += " Copy that whole block.\n"
+                    err_msg += "Paste the content below, then CTRL-D or CMD-D:\n"
+                    sys.stderr.write(err_msg)
+                    while True:
+                        try:
+                            line = input("")
+                        except EOFError:                    
+                            break
+                        line = line.replace('export ', '')
+                        key, contents = line.upper().split("=")
+                        value[key] = contents.lower()
+                        if "app_token" in line:
+                            break
+                    
+                    print ("Please enter your API Admin user token:")
+                    line = input("")
+                    value["ASTRA_DB_APPLICATION_TOKEN"] = line
+
+                    print ("Please enter your Database Administrator user token:")
+                    line = input("")
+                    value["ASTRA_DB_ADMIN_TOKEN"] = line
+                print (value)
                 
+               
             # Recommend default section name if not present
             origConfig.read(filename)
 
