@@ -7,6 +7,6 @@
   "tags": [
     { "name": "python", "name":"httpie" }
   ],
-  "category": "apps",
+  "category": "tools",
   "priority": 2
 }
