@@ -1,0 +1,12 @@
+{
+  "name": "HTTPie/Astra Katapod",
+  "description": "Use HTTPie to explore the Stargate API",
+  "duration": "10 minutes",
+  "skillLevel": "Beginning",
+  "githubUrl": "https://github.com/datastax-examples/httpie-katapod",
+  "tags": [
+    { "name": "python", "name":"httpie" }
+  ],
+  "category": "apps",
+  "priority": 2
+}
